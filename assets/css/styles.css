@@ -1,8 +1,18 @@
 /* Style for nav */
+nav {
+  font-size: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 2rem;
+}
 
 /* Style for main section title (question title, All done, high score)*/
 
-/* Style for questions */
+/* Style for main section questions */
+main {
+  text-align: center;
+}
 
 /* Button style */
 
