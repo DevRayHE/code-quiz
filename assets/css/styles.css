@@ -1,6 +1,19 @@
+.main-header {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.sub-header {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+
 /* Style for nav */
 nav {
-  font-size: 25px;
+  font-size: 1.5rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -11,21 +24,41 @@ nav {
 
 /* Style for main section questions */
 main {
-  text-align: center;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 75%;
 }
+
+p {
+  font-size: 16px;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0.5em;
+}
+
 
 /* Define a universal style to be used for all buttons */
 /* Button style */
+button {
+  font-size: 1.2em;
+  font-weight: bolder;
+  text-align: left;
+  background-color: blueviolet;
+  color:beige;
+  margin: 0.1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 /* Notification style (right, wrong with timer subtraction?) */
 #notification {
+  margin-top: 1em;
   opacity: 50%;
-  text-align: left;
   border-top: solid;
-  /* border-style: solid; */
   font-size:2em;
   font-style:italic;
-  padding: 1em;
+  padding: 0.5em;
 }
 
 /* Form input box style */
