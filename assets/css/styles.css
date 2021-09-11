@@ -27,7 +27,16 @@ main {
   display:flex;
   flex-direction: column;
   align-items: center;
-  max-width: 75%;
+}
+
+.flex-column {
+  display:flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
 }
 
 p {
@@ -51,14 +60,30 @@ button {
   cursor: pointer;
 }
 
+/* .button {
+  font-size: 1.2em;
+  font-weight: bolder;
+  text-align: left;
+  background-color: blueviolet;
+  color:beige;
+  margin: 0.1em;
+  border-radius: 5px;
+  cursor: pointer;
+} */
 /* Notification style (right, wrong with timer subtraction?) */
 #notification {
   margin-top: 1em;
   opacity: 50%;
-  border-top: solid;
   font-size:2em;
   font-style:italic;
   padding: 0.5em;
+  /* display:none; */
+}
+
+.timer-wrong {
+  color: red;
+  transform: scale(1.3);
+  transition: all 0.5s ease-in-out;
 }
 
 /* Form input box style */

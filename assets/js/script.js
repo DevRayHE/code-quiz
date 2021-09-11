@@ -1,12 +1,17 @@
 var main = document.querySelector("main");
 var mainHeaderEl = document.querySelector("header");
+var mainSection = document.querySelector("#main-section");
 // document.querySelector("#question")
-var timerEl = document.getElementById("timer");
 var viewHighScoreEl = document.getElementById("high-score");
-var notificationEl = document.getElementById("notification");
+var timerEl = document.getElementById("timer");
+// var notificationEl = document.querySelectorAll(".notification");
 
-viewHighScoreEl.textContent = "View Highscores";
+// var mainHeaderEl = document.createElement("header");
+// main.appendChild(mainHeaderEl);
 
+// Main game time 75 seconds.
+var mainTimerCount = 35;
+var currentQuestionIndex = 0;
 
 // Stores questions in an array of objects
 var questions = [
@@ -17,55 +22,60 @@ var questions = [
 	},
 	{
 		question: "question 2?",
-		answers: ["a", "b", "c", "d"],
+		answers: ["a2", "b2", "c2", "d2"],
 		correctAnswer: 0,
 	},
 	{
 		question: "question 3?",
-		answers: ["a", "b", "c", "d"],
+		answers: ["a3", "b3", "c3", "d3"],
 		correctAnswer: 0,
 	},
 	{
 		question: "question 4?",
-		answers: ["a", "b", "c", "d"],
+		answers: ["a4", "b4", "c4", "d4"],
 		correctAnswer: 0,
 	},
 	{
 		question: "question 5?",
-		answers: ["a", "b", "c", "d"],
+		answers: ["a5", "b5", "c5", "d5"],
 		correctAnswer: 0,
 	},
 	{
 		question: "question 6?",
-		answers: ["a", "b", "c", "d"],
+		answers: ["a6", "b6", "c6", "d6"],
 		correctAnswer: 0,
 	},
 ];
 
-var currentQuestionIndex = 0;
-
+// function init() {
+// 	render("startQuiz");
+// }
 
 // render function to render elements based on user input
 function render(toRender) {
+
 	// Render Start Quiz elments on initial load of the page
 	if (toRender === "startQuiz") {
 		console.log("startquiz!");
+
+		viewHighScoreEl.textContent = "View Highscores";
 		mainHeaderEl.textContent = "Coding Quiz Challenge";
 		var intro = document.createElement("p");
 		var startQuizBtn = document.createElement("button");
 
 		intro.innerText = "Try to answer the following code-related questions within the time limit.\n Keep in mind that incorrect answers will penalize your score time by 3 seconds!";
-		startQuizBtn.textContent = "Start Quiz";
+		startQuizBtn.innerText = "Start Quiz";
 
-		main.append(intro);
-		main.append(startQuizBtn);
-
-		startQuizBtn.setAttribute("style", "justify-content: end");
+		mainHeaderEl.setAttribute("class", "main-header");
+		mainSection.append(intro);
+		mainSection.appendChild(startQuizBtn);
+		// mainSection.append(startQuizBtn);
 
 		startQuizBtn.addEventListener("click", function() {
-			// Removes both intro and start quiz button elements.
-			main.removeChild(intro, startQuizBtn);
-			main.removeChild(startQuizBtn);
+			// Removes both intro and start quiz button elements on mouse click.
+			mainSection.removeChild(intro);
+			mainSection.removeChild(startQuizBtn);
+			mainTimer ();
 			render("questions");
 		});
 	}
@@ -80,67 +90,97 @@ function render(toRender) {
 }
 
 function updateQuestion () {
+
 	console.log("updatequestions function initiated!");
 	var currentQuestion = questions[currentQuestionIndex];
 
 	mainHeaderEl.innerText = currentQuestion.question;
+	// mainSection.replaceChild()
 
-	// var answer1El = document.getElementById("answer1");
-	// var answer2El = document.getElementById("answer2");
-	// var answer3El = document.getElementById("answer3");
-	// var answer4El = document.getElementById("answer4");
+	// Create 4 buttons with unique ID only when render questions for the first time
+	if(currentQuestionIndex === 0) {
+		var answer1El = document.createElement("button");
+		var answer2El = document.createElement("button");
+		var answer3El = document.createElement("button");
+		var answer4El = document.createElement("button");
 
-	// Create 4 buttons with unique ID.
-	var answer1El = document.createElement("button");
-	var answer2El = document.createElement("button");
-	var answer3El = document.createElement("button");
-	var answer4El = document.createElement("button");
-	answer1El.setAttribute("id", "answer1");
-	answer2El.setAttribute("id", "answer2");
-	answer3El.setAttribute("id", "answer3");
-	answer4El.setAttribute("id", "answer4");
+		// Append buttons to the main section and set style for them.
+		mainSection.append(answer1El,answer2El,answer3El,answer4El);
+		mainSection.setAttribute("class", "flex-column");
+		mainHeaderEl.setAttribute("class", "sub-header");
+		answer1El.setAttribute("id", "answer1");
+		answer2El.setAttribute("id", "answer2");
+		answer3El.setAttribute("id", "answer3");
+		answer4El.setAttribute("id", "answer4");
 
-	// Append buttons to the main tag
-	main.append(answer1El, answer2El, answer3El, answer4El);
+		answer1El.addEventListener("click", function () {
+			checkAnswer(0);
+		});
+		answer2El.addEventListener("click", function () {
+			checkAnswer(1);
+		});
+		answer3El.addEventListener("click", function () {
+			checkAnswer(2);
+		});
+		answer4El.addEventListener("click", function () {
+			checkAnswer(3);
+		});
+	} 
+	else {
+		answer1El = document.getElementById("answer1");
+		answer2El = document.getElementById("answer2");
+		answer3El = document.getElementById("answer3");
+		answer4El = document.getElementById("answer4");
+	}
 
+	console.log("index:" + currentQuestionIndex);
 	// Assign answer text into each button
 	answer1El.innerText = currentQuestion.answers[0];
 	answer2El.innerText = currentQuestion.answers[1];
 	answer3El.innerText = currentQuestion.answers[2];
 	answer4El.innerText = currentQuestion.answers[3];
 
-	mainHeaderEl.setAttribute("class", "sub-header");
-	// answer1El.setAttribute("class", "button");
-	// answer2El.setAttribute("class", "button");
-	// answer3El.setAttribute("class", "button");
-	// answer4El.setAttribute("class", "button");
-	// currentQuestionIndex++;
+	// localStorage.setItem("answer1Btn",JSON.stringify(answer1El));
 
-
-	answer1El.addEventListener("click", function () {
-		checkAnswer(0);
-	});
-	answer2El.addEventListener("click", function () {
-		checkAnswer(1);
-	});
-	answer3El.addEventListener("click", function () {
-		checkAnswer(2);
-	});
-	answer4El.addEventListener("click", function () {
-		checkAnswer(3);
-	});
+	// var testEl = JSON.parse(localStorage.getItem("answer1Btn"));
+	// console.log(testEl)
 }
 
+// Function relation tree..... 
+// init() {
+// 	render() {
+// 		if (S) {
+// 			click event = > render() {
 
+// 			}
+// 		}
+// 		else if(Q) {
+// 			updateQuestion(Q) {
+// 				click event => checkAnswer(clickedPosition) {
+// 					notificationTimerFunc() {
+// 						render(Q) {
+
+// 						}
+// 					}
+// 				}
+// 			}
+// 		}
+
+// 	}
+// 	mainTimerFunc () {
+
+// 	}
+// }
 
 // check right/wrong selection function
 function checkAnswer (clickedAnswer) {
+	// mainSection.removeChild(answer1El);
 	var currentQuestion = questions[currentQuestionIndex];
 	var answerIsCorrect = false;
 
-	if (currentQuestion === null) {
-		return;
-	}
+	// if (currentQuestion === null) {
+	// 	return;
+	// }
 
 	// Render correct answer notification
 	if (currentQuestion.correctAnswer === clickedAnswer) {
@@ -151,13 +191,79 @@ function checkAnswer (clickedAnswer) {
 		mainTimerCount -= 3;
 	}
 
-	// renderNotification(clickedAnswer);
-	notificationTimer(answerIsCorrect);
 	currentQuestionIndex++;
+	console.log("checkanswer" + currentQuestionIndex);
+	notificationTimer(answerIsCorrect);
+}
+
+// main timer function to control game time
+function mainTimer () {
+	timerEl.textContent = "Time: " + mainTimerCount;
+
+	// Sets timer
+	mainTimer = setInterval(function() {
+		mainTimerCount--;
+		timerEl.textContent = "Time: " + mainTimerCount;
+		// Does not goes into negative time
+		// if (mainTimerCount >= 0) {
+		// 	mainTimerCount--;
+		// }
+		if (mainTimerCount <= 0) {
+			debugger;
+			timerEl.textContent = "Time: 0";
+			clearInterval(mainTimer);
+		}
+	}, 1000);
+}
+
+// timer function to contorl notification display time
+function notificationTimer(answerIsCorrect) {
+	// Notification display time 1 seconds 
+	console.log("noti" + currentQuestionIndex);
+	let TimerCount = 2;
+	// var notificationEl = document.createElement("div");
+	// notificationEl.setAttribute("id", "notification");
+	// main.appendChild(notificationEl);
+
+	let notificationEl = document.querySelector("#notification");
+	notificationEl.setAttribute("style", "border-top: solid");
+
+	if (answerIsCorrect) {
+		notificationEl.textContent = notificationEl.dataset.correct;
+		// notificationEl.dataset.state = "visible";
+		// notificationEl.setAttribute("data-state")
+		// notificationEl.textContent = "Correct!";
+		// console.log("correct answer");
+	}
+	else {
+		notificationEl.innerText = notificationEl.dataset.wrong;
+		// notificationEl.innerText = "Wrong!\n Minus 3 seconds!";
+		// Scale and turns timer font to red on wrong answer
+		timerEl.setAttribute("class", "timer-wrong");
+		// console.log("wrong answer");
+	}
+
+	Timer = setInterval(function() {
+		TimerCount--;
+	
+		if (TimerCount === 0) {
+			// Remove notification element
+			// main.removeChild(notificationEl);
+			// mainSection.removeChild(answer1El);
+			// Reset timer font to normal
+			timerEl.removeAttribute("class");
+			render("questions");
+			clearInterval(Timer);
+			
+		}
+	}, 1000);
 }
 
 // init function to call when page is loaded
-function init() {
+function init () {
+	// var mainHeaderEl = document.createElement("header");
+	// main.appendChild(mainHeaderEl);
+	// viewHighScoreEl.textContent = "View Highscores";
 	render("startQuiz");
 }
 
@@ -176,61 +282,6 @@ init();
 // }
 
 
-// Seperate codes into different functions:
-
-
 // check win / lose function
 // function to setItem and or getItem from localStorage
 // 
-
-// Main game time 75 seconds.
-var mainTimerCount = 35;
-
-// main timer function to control game time
-function mainTimer() {
-	timerEl.textContent = "Time: " + mainTimerCount;
-
-	// Sets timer
-	timer = setInterval(function() {
-		mainTimerCount--;
-		timerEl.textContent = "Time: " + mainTimerCount;
-		// Does not goes into negative time
-		if (mainTimerCount >= 0) {
-			mainTimerCount--;
-		}
-		if (mainTimerCount <= 0) {
-			// timerEl.innerText = 0;
-			clearInterval(timer);
-		}
-	}, 1000);
-}
-
-mainTimer();
-
-// timer function to contorl notification display time
-function notificationTimer(answerIsCorrect) {
-	// Notification display time 2 seconds or if questions refreshes.
-	var notificationTimerCount = 2;
-
-	timer = setInterval(function() {
-		notificationTimerCount--;
-
-		if (answerIsCorrect) {
-			notificationEl.textContent = "Correct!";
-			console.log("correct answer");
-		}
-		else {
-			notificationEl.innerText = "Wrong!\n Minus 3 seconds!";
-			console.log("wrong answer");
-		}
-
-		if (notificationTimerCount === 0) {
-			notificationEl.textContent = "";
-			main.removeChild(answer1El);
-			render ("question");
-			clearInterval(timer);
-		}
-	}, 1000);
-	// Only update question at the end of notification display
-	
-}
