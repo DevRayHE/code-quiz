@@ -8,7 +8,7 @@
     <meta name="description" content="Write a description of your website for search engines here" />
 
     <!-- Page title -->
-    <title>Code Quiz</title>
+    <title>Highscores Ranking</title>
 
     <!-- Page icon -->
     <link rel="icon" href="assets/images/cq-favicon.png" />
@@ -26,19 +26,18 @@
   <body>
     <!--  Top navigation bar -->
     <nav>
-      <div><a href="highscores.html" id="high-score"></a></div>
-      <div id="timer"></div>
     </nav>
-     <!-- Main section displays questions, end page -->
+     <!-- Main section displays highscores ranking list -->
     <main>
-      <header id="question"></header>
-      <ul>
-        <li id="answer1"></li>
-        <li id="answer2"></li>
-        <li id="answer3"></li>
-        <li id="answer4"></li>
+      <header id="highscore-title"></header>
+      <!-- Generate ranking by fetching data from localStorage with getItem -->
+      <ul id="ranking">
+        <li></li>
       </ul>
-      <section id="notification"></section>
+      <!-- Two nagivation buttons -->
+      <btn id="go-back"><a href="index.html">This is a Go Back Button</a></btn>
+      <!-- Maybe has a pop up warning message to double check with user? -->
+      <btn id="clear-highscores">This is a button to clear high score</btn>
     </main>
   </body>
 </html>

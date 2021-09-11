@@ -6,6 +6,7 @@ var answer3El = document.getElementById("answer3");
 var answer4El = document.getElementById("answer4");
 var timerEl = document.getElementById("timer");
 var viewHighScoreEl = document.getElementById("high-score");
+var notificationEl = document.getElementById("notification");
 
 viewHighScoreEl.textContent = "View Highscores";
 
@@ -62,16 +63,21 @@ function checkAnswer (clickedAnswer) {
 	var currentQuestion = questions[currentQuestionIndex];
 
 	if (currentQuestion === null) {
-			return;
+		return;
 	}
 
+	// Render correct answer notification
 	if (currentQuestion.correctAnswer === clickedAnswer) {
-			console.log("correct answer");
+		notificationEl.textContent = "Correct!";
+		console.log("correct answer");
 	}
-	else {
-			console.log("wrong answer");
+	else { // Render wrong notification and minus 3 seconds.
+		notificationEl.innerText = "Wrong!\n Minus 3 seconds!";
+		timerCount -= 3;
+		console.log("wrong answer");
 	}
 
+	// renderNotification(clickedAnswer);
 	currentQuestionIndex++;
 	updateQuestion ();
 }
@@ -93,17 +99,29 @@ answer4El.addEventListener("click", function () {
 updateQuestion();
 
 
+// render function to render elements based on user input
+// function renderNotification(correctAnswer) {
+// 	if(correctAnswer) {
+// 		notificationEl.textContent = "Correct!";
+// 		console.log("correct answer");
+// 	}
+// 	else {
+// 		notificationEl.innerText = "Wrong!\n Minus 3 seconds!"
+// 		console.log("wrong answer");
+// 	}
+// }
+
+
+
 // Seperate codes into different functions:
 
 // init function to call when start quiz is clicked
 // check right/wrong selection function
 // check win / lose function
-// render function to render elements based on user input
 // function to setItem and or getItem from localStorage
 // 
 
-
-var timerCount = 15;
+var timerCount = 35;
 
 // timer function to control time
 function startTimer() {
@@ -113,7 +131,6 @@ function startTimer() {
 	timer = setInterval(function() {
 		timerCount--;
 		timerEl.textContent = "Time: " + timerCount;
-		
 		
 		// Does not goes into negative time
 		// if (timerCount >= 0) {

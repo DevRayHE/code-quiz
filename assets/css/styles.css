@@ -14,9 +14,19 @@ main {
   text-align: center;
 }
 
+/* Define a universal style to be used for all buttons */
 /* Button style */
 
-/* Notification style (right, wrong, bonus: timer subtraction?) */
+/* Notification style (right, wrong with timer subtraction?) */
+#notification {
+  opacity: 50%;
+  text-align: left;
+  border-top: solid;
+  /* border-style: solid; */
+  font-size:2em;
+  font-style:italic;
+  padding: 1em;
+}
 
 /* Form input box style */
 
