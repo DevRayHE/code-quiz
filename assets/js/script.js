@@ -83,19 +83,88 @@ function render(toRender) {
 	else if (toRender === "questions"){
 		updateQuestion();
 	}
-	// Rdner all done elements by the end of questions or timer is up
-	else if (toRender === "allDone") {
+	// Render result page by the end of questions or timer is up
+	else if (toRender === "result") {
+		// Hide timer element, stops main timer, sent score to local storage
+		timerEl.setAttribute("style", "display:none");
+		clearInterval(mainTimer);
+		let score = mainTimerCount;
+		localStorage.setItem("score", score);
 		mainHeaderEl.textContent = "All done!";
+		mainSection.textContent = "Your final score is: " + localStorage.getItem("score");
+		let form = document.createElement("form");
+		let label = document.createElement("label");
+		let input = document.createElement("input");
+		let submit = document.createElement("button");
+		let anchor = document.createElement("a");
+		input.class= "text";
+		input.placeholder = "initial";
+		input.id = "initial";
+
+		submit.href = "highscores.html";
+		anchor.setAttribute("href", "highscores.html");
+		// input.setAttribute("id", "initial");
+
+
+		main.append(form);
+		// form.appendChild(label);
+		// form.appendChild(input);
+		form.append(label, input, anchor);
+		anchor.appendChild(submit);
+		label.textContent = "Enter Initial: ";
+		submit.textContent = "Submit";
+
+		// let initial = document.getElementById("initial").value;
+		// alert(initial);
+
+		// function getInput(event) {
+		// 	event.preventDefault();
+		// 	let userInput = document.getElementById("initial").value;
+		// 	return userInput;
+		// }
+
+		var initial = submit.addEventListener("click", function(event) {
+			// event.preventDefault();
+			let userInput = document.getElementById("initial").value;
+			
+			let highscores = {
+				initialA: 44,
+			};
+	
+			highscores[userInput] = score;
+			console.log(highscores);
+
+			localStorage.setItem("highscores", JSON.stringify(highscores));
+			return userInput;
+		});
+		console.log(initial);
+
+		let highscores = JSON.parse(localStorage.getItem("highscores"));
+		
+		
+		// console.log(initial);
+
+		// submit.addEventListener("click", function(event) {
+		// 	event.preventDefault();
+		// })
+		
+		// document.createElement("input");
+		// main.appendChild(input);
+		// <input class="text-input" id="initial" type="text" placeholder="Initial"></input>
 	}
 }
 
 function updateQuestion () {
 
+	// Render result page after all questions answered
+	if (currentQuestionIndex === questions.length) {
+		return render("result");
+	}
+
 	console.log("updatequestions function initiated!");
 	var currentQuestion = questions[currentQuestionIndex];
 
 	mainHeaderEl.innerText = currentQuestion.question;
-	// mainSection.replaceChild()
 
 	// Create 4 buttons with unique ID only when render questions for the first time
 	if(currentQuestionIndex === 0) {
@@ -125,7 +194,7 @@ function updateQuestion () {
 		answer4El.addEventListener("click", function () {
 			checkAnswer(3);
 		});
-	} 
+	}
 	else {
 		answer1El = document.getElementById("answer1");
 		answer2El = document.getElementById("answer2");
@@ -186,9 +255,9 @@ function checkAnswer (clickedAnswer) {
 	if (currentQuestion.correctAnswer === clickedAnswer) {
 		answerIsCorrect = true;
 	}
-	else { // Render wrong notification and minus 3 seconds.
+	else { // Render wrong notification and minus 6 seconds.
 		answerIsCorrect = false;
-		mainTimerCount -= 3;
+		mainTimerCount -= 6;
 	}
 
 	currentQuestionIndex++;
@@ -209,9 +278,9 @@ function mainTimer () {
 		// 	mainTimerCount--;
 		// }
 		if (mainTimerCount <= 0) {
-			debugger;
 			timerEl.textContent = "Time: 0";
 			clearInterval(mainTimer);
+			render("result");
 		}
 	}, 1000);
 }
@@ -220,7 +289,7 @@ function mainTimer () {
 function notificationTimer(answerIsCorrect) {
 	// Notification display time 1 seconds 
 	console.log("noti" + currentQuestionIndex);
-	let TimerCount = 2;
+	let TimerCount = 1;
 	// var notificationEl = document.createElement("div");
 	// notificationEl.setAttribute("id", "notification");
 	// main.appendChild(notificationEl);
@@ -229,7 +298,7 @@ function notificationTimer(answerIsCorrect) {
 	notificationEl.setAttribute("style", "border-top: solid");
 
 	if (answerIsCorrect) {
-		notificationEl.textContent = notificationEl.dataset.correct;
+		notificationEl.innerText = notificationEl.dataset.correct;
 		// notificationEl.dataset.state = "visible";
 		// notificationEl.setAttribute("data-state")
 		// notificationEl.textContent = "Correct!";
@@ -250,6 +319,9 @@ function notificationTimer(answerIsCorrect) {
 			// Remove notification element
 			// main.removeChild(notificationEl);
 			// mainSection.removeChild(answer1El);
+			notificationEl.innerText = "";
+			notificationEl.setAttribute("style", "border-top: none");
+
 			// Reset timer font to normal
 			timerEl.removeAttribute("class");
 			render("questions");
