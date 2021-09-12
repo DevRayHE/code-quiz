@@ -366,7 +366,7 @@ function init () {
 		console.log("current page is index html!");
 		render("startQuiz");
 	}
-	else if (currentPage.endsWith("highscores.html")){
+	else if (currentPage.endsWith("highscores.html" || "highscores")){
 		console.log("current page is highscores html!");
 		render("highScore");
 	}
