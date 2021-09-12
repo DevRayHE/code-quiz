@@ -51,7 +51,7 @@ var questions = [
 // 	render("startQuiz");
 // }
 
-// render function to render elements based on user input
+// Main render function to render the page based on user input
 function render(toRender) {
 
 	// Render Start Quiz elments on initial load of the page
@@ -89,6 +89,7 @@ function render(toRender) {
 		timerEl.setAttribute("style", "display:none");
 		clearInterval(mainTimer);
 		let score = mainTimerCount;
+		// Store score to local storage.
 		localStorage.setItem("score", score);
 		mainHeaderEl.textContent = "All done!";
 		mainSection.textContent = "Your final score is: " + localStorage.getItem("score");
@@ -112,7 +113,7 @@ function render(toRender) {
 		anchor.appendChild(submit);
 		label.textContent = "Enter Initial: ";
 		anchor.textContent = "suubmit";
-		// submit.textContent = "Submit";
+		submit.textContent = "Submit";
 
 		// let initial = document.getElementById("initial").value;
 		// alert(initial);
@@ -152,6 +153,28 @@ function render(toRender) {
 		// document.createElement("input");
 		// main.appendChild(input);
 		// <input class="text-input" id="initial" type="text" placeholder="Initial"></input>
+	}
+	else if (toRender === "highScore") {
+		let highscores = JSON.parse(localStorage.getItem("highscores"));
+		// Convert highscores entries to an Array of arrays.
+		let strHighscores = Object.entries(highscores);
+		// Sort the high scores based on score and assign to a variable.
+		let sortedHighscores = strHighscores.sort((a,b) => b[1] - a[1]);
+		console.log(sortedHighscores);
+		console.log(typeof(sortedHighscores));
+		localStorage.setItem("highscores", JSON.stringify(sortedHighscores));
+		console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscores")));
+
+		let ol = document.querySelector("ol");
+		// let strSortedHighscores = Object.entries(sortedHighscores);
+		for (const key in sortedHighscores) {
+			let li = document.createElement("li");
+			ol.appendChild(li);
+			li.textContent = `${key}` + " - " + `${sortedHighscores[key]}`;
+			console.log(`${key}`);
+			console.log(`${sortedHighscores[key]}`);
+		}
+		
 	}
 }
 
@@ -335,10 +358,18 @@ function notificationTimer(answerIsCorrect) {
 
 // init function to call when page is loaded
 function init () {
-	// var mainHeaderEl = document.createElement("header");
-	// main.appendChild(mainHeaderEl);
-	// viewHighScoreEl.textContent = "View Highscores";
-	render("startQuiz");
+
+	// Retrives current html file, and call function accordingly.
+	let currentPage = location.href;
+
+	if (currentPage.endsWith("index.html")) {
+		console.log("current page is index html!");
+		render("startQuiz");
+	}
+	else if (currentPage.endsWith("highscores.html")){
+		console.log("current page is highscores html!");
+		render("highScore");
+	}
 }
 
 init();
