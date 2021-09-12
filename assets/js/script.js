@@ -362,7 +362,7 @@ function init () {
 	// Retrives current html file, and call function accordingly.
 	let currentPage = location.href;
 
-	if (currentPage.endsWith("index.html")) {
+	if (currentPage.endsWith("index.html" || "code-quiz")) {
 		console.log("current page is index html!");
 		render("startQuiz");
 	}
