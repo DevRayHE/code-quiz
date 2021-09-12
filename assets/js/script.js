@@ -103,16 +103,16 @@ function render(toRender) {
 
 		submit.href = "highscores.html";
 		anchor.setAttribute("href", "highscores.html");
+		anchor.setAttribute("class","button");
 		// input.setAttribute("id", "initial");
 
 
 		main.append(form);
-		// form.appendChild(label);
-		// form.appendChild(input);
 		form.append(label, input, anchor);
 		anchor.appendChild(submit);
 		label.textContent = "Enter Initial: ";
-		submit.textContent = "Submit";
+		anchor.textContent = "suubmit";
+		// submit.textContent = "Submit";
 
 		// let initial = document.getElementById("initial").value;
 		// alert(initial);
@@ -124,12 +124,12 @@ function render(toRender) {
 		// }
 
 		var initial = submit.addEventListener("click", function(event) {
-			// event.preventDefault();
+			// Prevent browser default behaviour to store value properly to  local storage.
+			event.preventDefault();
 			let userInput = document.getElementById("initial").value;
 			
-			let highscores = {
-				initialA: 44,
-			};
+			// Retrive from highscore from local storage+ b
+			let highscores = JSON.parse(localStorage.getItem("highscores"));
 	
 			highscores[userInput] = score;
 			console.log(highscores);
@@ -139,7 +139,8 @@ function render(toRender) {
 		});
 		console.log(initial);
 
-		let highscores = JSON.parse(localStorage.getItem("highscores"));
+		// let highscores = JSON.parse(localStorage.getItem("highscores"));
+		// console.log(highscores);
 		
 		
 		// console.log(initial);
@@ -157,6 +158,7 @@ function render(toRender) {
 function updateQuestion () {
 
 	// Render result page after all questions answered
+	console.log(questions.length);
 	if (currentQuestionIndex === questions.length) {
 		return render("result");
 	}

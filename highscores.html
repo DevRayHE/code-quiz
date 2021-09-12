@@ -29,15 +29,16 @@
     </nav>
      <!-- Main section displays highscores ranking list -->
     <main>
-      <header id="highscore-title"></header>
+      <header id="highscore-title" class="main-header">High Scores</header>
       <!-- Generate ranking by fetching data from localStorage with getItem -->
       <ul id="ranking">
-        <li></li>
       </ul>
       <!-- Two nagivation buttons -->
-      <button id="go-back"><a href="index.html">This is a Go Back Button</a></button>
-      <!-- Maybe has a pop up warning message to double check with user? -->
-      <button id="clear-highscores">This is a button to clear high score</button>
+      <section class="flex-row">
+        <a href="index.html" id="go-back"><button>Go Back</button></a>
+        <!-- Maybe has a pop up warning message to double check with user? -->
+        <button id="clear-highscores">Clear high score history</button>
+      </section>
     </main>
   </body>
 </html>
