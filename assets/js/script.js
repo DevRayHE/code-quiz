@@ -86,7 +86,6 @@ function render(toRender) {
 	// Render result page by the end of questions or timer is up
 	else if (toRender === "result") {
 		// Hide timer element, stops main timer, sent score to local storage
-		timerEl.setAttribute("style", "display:none");
 		clearInterval(mainTimer);
 		let score = mainTimerCount;
 		// Store score to local storage.
@@ -112,8 +111,9 @@ function render(toRender) {
 		form.append(label, input, anchor);
 		anchor.appendChild(submit);
 		label.textContent = "Enter Initial: ";
-		anchor.textContent = "suubmit";
-		submit.textContent = "Submit";
+		anchor.textContent = "Submit";
+		anchor.setAttribute("class","button");
+		// submit.textContent = "Submit";
 
 		// let initial = document.getElementById("initial").value;
 		// alert(initial);
@@ -124,19 +124,32 @@ function render(toRender) {
 		// 	return userInput;
 		// }
 
-		var initial = submit.addEventListener("click", function(event) {
+		let initial = anchor.addEventListener("click", function(e) {
 			// Prevent browser default behaviour to store value properly to  local storage.
-			event.preventDefault();
+			e.preventDefault();
+			e.stopPropagation();
 			let userInput = document.getElementById("initial").value;
-			
+			console.log("user input captured");
+
 			// Retrive from highscore from local storage+ b
-			let highscores = JSON.parse(localStorage.getItem("highscores"));
+			// let highscoreIsEmpty = localStorage.getItem("highscores");
+
+			if (localStorage.getItem("highscores")) {
+				var highscores = JSON.parse(localStorage.getItem("highscores"));
+				console.log("Get Item");
+				console.log(highscores);
+			}
+			else {
+				var highscores = {};
+				console.log("Get item is empty");
+			}
 	
+			console.log("userInput is captured as this: " + userInput);
 			highscores[userInput] = score;
 			console.log(highscores);
 
 			localStorage.setItem("highscores", JSON.stringify(highscores));
-			return userInput;
+			return highscores;
 		});
 		console.log(initial);
 
@@ -154,26 +167,61 @@ function render(toRender) {
 		// main.appendChild(input);
 		// <input class="text-input" id="initial" type="text" placeholder="Initial"></input>
 	}
-	else if (toRender === "highScore") {
-		let highscores = JSON.parse(localStorage.getItem("highscores"));
-		// Convert highscores entries to an Array of arrays.
-		let strHighscores = Object.entries(highscores);
-		// Sort the high scores based on score and assign to a variable.
-		let sortedHighscores = strHighscores.sort((a,b) => b[1] - a[1]);
-		console.log(sortedHighscores);
-		console.log(typeof(sortedHighscores));
-		localStorage.setItem("highscores", JSON.stringify(sortedHighscores));
-		console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscores")));
+	else if (toRender === "highScorePage") {
+		// If highscores contains record.
+		if (localStorage.getItem("highscores")) {
+			var highscores = JSON.parse(localStorage.getItem("highscores"));
+			console.log("after parse: " + highscores);
 
-		let ol = document.querySelector("ol");
-		// let strSortedHighscores = Object.entries(sortedHighscores);
-		for (const key in sortedHighscores) {
-			let li = document.createElement("li");
-			ol.appendChild(li);
-			li.textContent = `${key}` + " - " + `${sortedHighscores[key]}`;
-			console.log(`${key}`);
-			console.log(`${sortedHighscores[key]}`);
+
+			// Convert highscores entries to an Array of arrays.
+			let arrHighscores = Object.entries(highscores);
+			// arrHighscores = Object.entries(highscores);
+			// arrHighscores = Object.entries(highscores);
+			console.log("after  convert to array: " + arrHighscores);
+
+			// Sort the high scores based on score and assign to a variable.
+			console.log("before sort: " + arrHighscores);
+			let sortedHighscores = arrHighscores.sort((a,b) => b[1] - a[1]);
+			console.log("after sort: " + arrHighscores);
+
+			console.log(sortedHighscores);
+			console.log(typeof(sortedHighscores));
+			localStorage.setItem("highscores", JSON.stringify(sortedHighscores));
+			highscores = JSON.parse(localStorage.getItem("highscores"));
+			console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscores")));
+
+			let ol = document.querySelector("ol");
+			// let strSortedHighscores = Object.entries(sortedHighscores);
+			for (const key in highscores) {
+				let li = document.createElement("li");
+				ol.appendChild(li);
+				// li.textContent = (parseInt(`${key}`) + 1)  + " - " + `${sortedHighscores[key]}`;
+				li.textContent = `${key}` + " - " + `${highscores[key]}`;
+				// console.log(`${key}`);
+				// console.log(`${sortedHighscores[key]}`);
+			}
+
+			// let testObj = {
+			// 	a: 22,
+			// 	b: 33,
+			// 	c: 44,
+			// } 
+
+			// for (const key in testObj) {
+			// 	console.log(`${key}`);
+			// 	console.log(`${testObj[key]}`);
+			// }
 		}
+		else {
+			var highscores = {};
+		}
+
+		let clearHistory = document.querySelector("#clear-highscores");
+		clearHistory.addEventListener("click", function() {
+			localStorage.removeItem("highscores");
+			render("highScorePage");
+		});
 		
 	}
 }
@@ -268,7 +316,7 @@ function updateQuestion () {
 
 // check right/wrong selection function
 function checkAnswer (clickedAnswer) {
-	// mainSection.removeChild(answer1El);
+
 	var currentQuestion = questions[currentQuestionIndex];
 	var answerIsCorrect = false;
 
@@ -368,7 +416,7 @@ function init () {
 	}
 	else if (currentPage.endsWith("highscores.html") || currentPage.endsWith("highscores/")){
 		console.log("current page is highscores html!");
-		render("highScore");
+		render("highScorePage");
 	}
 }
 

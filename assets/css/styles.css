@@ -61,7 +61,7 @@ button {
   padding:0.2em;
 }
 
-/* .button {
+.button {
   font-size: 1.2em;
   font-weight: bolder;
   text-align: left;
@@ -70,7 +70,8 @@ button {
   margin: 0.1em;
   border-radius: 5px;
   cursor: pointer;
-} */
+  padding:0.2em;
+}
 
 
 /* Notification style (right, wrong with timer subtraction?) */
@@ -91,6 +92,10 @@ button {
 
 a {
   text-decoration:none;
+}
+
+ol {
+  list-style: decimal;
 }
 
 /* Form input box style */
