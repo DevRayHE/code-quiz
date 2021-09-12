@@ -362,11 +362,11 @@ function init () {
 	// Retrives current html file, and call function accordingly.
 	let currentPage = location.href;
 
-	if (currentPage.endsWith("index.html") || currentPage.endsWith("code-quiz")) {
+	if (currentPage.endsWith("index.html") || currentPage.endsWith("code-quiz/")) {
 		console.log("current page is index html!");
 		render("startQuiz");
 	}
-	else if (currentPage.endsWith("highscores.html") || currentPage.endsWith("highscores")){
+	else if (currentPage.endsWith("highscores.html") || currentPage.endsWith("highscores/")){
 		console.log("current page is highscores html!");
 		render("highScore");
 	}
@@ -374,7 +374,6 @@ function init () {
 
 init();
 // updateQuestion();
-
 // function renderNotification(correctAnswer) {
 // 	if(correctAnswer) {
 // 		notificationEl.textContent = "Correct!";
