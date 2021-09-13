@@ -95,9 +95,14 @@ a {
 }
 
 ol {
+  background-color: rgb(185, 120, 185);
   list-style: decimal;
+  margin-bottom: 1em;
 }
 
 /* Form input box style */
 
 /* High score each player style */
+li {
+  line-height: 1.5;
+}

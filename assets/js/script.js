@@ -47,14 +47,10 @@ var questions = [
 	},
 ];
 
-// function init() {
-// 	render("startQuiz");
-// }
-
-// Main render function to render the page based on user input
+// Main render function to render the page based on scenario
 function render(toRender) {
 
-	var updateHighscore = false;
+	// var updateHighscore = false;
 
 	// Render Start Quiz elments on initial load of the page
 	if (toRender === "startQuiz") {
@@ -83,7 +79,67 @@ function render(toRender) {
 	}
 	// Render questions when start Quiz button or answer is chosen
 	else if (toRender === "questions"){
-		updateQuestion();
+		// updateQuestion();
+		// Render result page after all questions answered
+		console.log(questions.length);
+		if (currentQuestionIndex === questions.length) {
+			return render("result");
+		}
+
+		console.log("updatequestions function initiated!");
+		var currentQuestion = questions[currentQuestionIndex];
+
+		mainHeaderEl.innerText = currentQuestion.question;
+
+		// Create 4 buttons with unique ID only when render questions for the first time
+		if(currentQuestionIndex === 0) {
+			var answer1El = document.createElement("button");
+			var answer2El = document.createElement("button");
+			var answer3El = document.createElement("button");
+			var answer4El = document.createElement("button");
+
+			// Append buttons to the main section and set style for them.
+			mainSection.append(answer1El,answer2El,answer3El,answer4El);
+			mainSection.setAttribute("class", "flex-column");
+			mainHeaderEl.setAttribute("class", "sub-header");
+			answer1El.setAttribute("id", "answer1");
+			answer2El.setAttribute("id", "answer2");
+			answer3El.setAttribute("id", "answer3");
+			answer4El.setAttribute("id", "answer4");
+
+			// Add event listener to check answer
+			answer1El.addEventListener("click", function () {
+				// Call the check answer function
+				checkAnswer(0);
+			});
+			answer2El.addEventListener("click", function () {
+				checkAnswer(1);
+			});
+			answer3El.addEventListener("click", function () {
+				checkAnswer(2);
+			});
+			answer4El.addEventListener("click", function () {
+				checkAnswer(3);
+			});
+	}
+	else {
+		answer1El = document.getElementById("answer1");
+		answer2El = document.getElementById("answer2");
+		answer3El = document.getElementById("answer3");
+		answer4El = document.getElementById("answer4");
+	}
+
+	console.log("index:" + currentQuestionIndex);
+	// Assign answer text into each button
+	answer1El.innerText = currentQuestion.answers[0];
+	answer2El.innerText = currentQuestion.answers[1];
+	answer3El.innerText = currentQuestion.answers[2];
+	answer4El.innerText = currentQuestion.answers[3];
+
+	// localStorage.setItem("answer1Btn",JSON.stringify(answer1El));
+
+	// var testEl = JSON.parse(localStorage.getItem("answer1Btn"));
+	// console.log(testEl)
 	}
 	// Render result page by the end of questions or timer is up
 	else if (toRender === "result") {
@@ -119,23 +175,30 @@ function render(toRender) {
 		// let initial = document.getElementById("initial").value;
 		// alert(initial);
 
-		let initial = submit.addEventListener("click", function(e) {
+		submit.addEventListener("click", function(e) {
 			// Prevent browser default behaviour to store value properly to  local storage.
 			e.preventDefault();
 			// e.stopPropagation();
 
-			updateHighscore = true;
+			// updateHighscore = true;
 
 			let userInput = document.getElementById("initial").value;
+			// TO DO: not finalized yet, need to stop submit link to next page action.
+			if (userInput === "") {
+				window.alert("Invalid input!");
+				render("result");
+				userInput = document.getElementById("initial").value;
+			}
 			console.log("user input captured");
 
-			// Retrive from highscore from local storage+ b
+			// Retrive from highscore from local storage if not empty.
 			if (localStorage.getItem("highscores")) {
 				var highscores = JSON.parse(localStorage.getItem("highscores"));
 				console.log("Get Item");
 				console.log(highscores);
 			}
 			else {
+				// Create empty object
 				var highscores = {};
 				console.log("Get item is empty");
 			}
@@ -144,11 +207,34 @@ function render(toRender) {
 			highscores[userInput] = score;
 			console.log(highscores);
 
-			localStorage.setItem("highscores", JSON.stringify(highscores));
+			// localStorage.setItem("highscores", JSON.stringify(highscores));
+
+			// var highscores = JSON.parse(localStorage.getItem("highscoresHistory"));
+			// console.log("after parse: " + highscores);
+
+
+			// Convert highscores entries to an Array of arrays.
+			let arrHighscores = Object.entries(highscores);
+			console.log("after  convert to array: " + arrHighscores);
+
+			// Sort the high scores based on score and assign to a variable.
+			console.log("before sort: " + arrHighscores);
+			let sortedArrHighscores = arrHighscores.sort((a,b) => b[1] - a[1]);
+			console.log("after sort: " + arrHighscores);
+
+			console.log(sortedArrHighscores);
+			console.log(typeof(sortedArrHighscores));
+
+			// Converting sorted Array of arrays high scores back to an object, to use stringify store in local storage properly.
+			let objHighscores = Object.fromEntries(sortedArrHighscores);
+			localStorage.setItem("highscores", JSON.stringify(objHighscores));
+			// highscores = JSON.parse(localStorage.getItem("highscores"));
+			// console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscores")));
+			console.log("updated local storage highscores should be sorted now: " + highscores);
+
 			location.href = "highscores.html";
-			return highscores;
 		});
-		console.log(initial);
+		
 
 		// let highscores = JSON.parse(localStorage.getItem("highscores"));
 		// console.log(highscores);
@@ -157,33 +243,28 @@ function render(toRender) {
 		// main.appendChild(input);
 		// <input class="text-input" id="initial" type="text" placeholder="Initial"></input>
 	}
-	else if (toRender === "highScorePage") {
+	else if (toRender === "highscoresPage") {
 		// If highscores contains record.
 		// Change to sort only happens when a new highscore is captured
-		if (localStorage.getItem("highscoresHistory") && updateHighscore) {
-			var highscoresHistory = JSON.parse(localStorage.getItem("highscoresHistory"));
-			console.log("after parse: " + highscoresHistory);
-
+		if (localStorage.getItem("highscores")) {
+			var highscores = JSON.parse(localStorage.getItem("highscores"));
+			console.log("after parse: " + highscores);
 
 			// Convert highscores entries to an Array of arrays.
-			let arrHighscores = Object.entries(highscores);
-			// arrHighscores = Object.entries(highscores);
-			// arrHighscores = Object.entries(highscores);
-			console.log("after  convert to array: " + arrHighscores);
+			// let arrHighscores = Object.entries(highscores);
+			// console.log("after  convert to array: " + arrHighscores);
 
 			// Sort the high scores based on score and assign to a variable.
-			console.log("before sort: " + arrHighscores);
-			let sortedHighscores = arrHighscores.sort((a,b) => b[1] - a[1]);
-			console.log("after sort: " + arrHighscores);
+			// console.log("before sort: " + arrHighscores);
+			// let sortedHighscores = arrHighscores.sort((a,b) => b[1] - a[1]);
+			// console.log("after sort: " + arrHighscores);
 
-			console.log(sortedHighscores);
-			console.log(typeof(sortedHighscores));
-			localStorage.setItem("highscoresHistory", JSON.stringify(sortedHighscores));
-			highscores = JSON.parse(localStorage.getItem("highscoresHistory"));
-			console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscoresHistory")));
+			// localStorage.setItem("highscoresHistory", JSON.stringify(sortedHighscores));
+			// highscores = JSON.parse(localStorage.getItem("highscoresHistory"));
+			// console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscoresHistory")));
 
 			let ol = document.querySelector("ol");
-			// let strSortedHighscores = Object.entries(sortedHighscores);
+			// Loop to render li item for each high score
 			for (const key in highscores) {
 				let li = document.createElement("li");
 				ol.appendChild(li);
@@ -193,16 +274,6 @@ function render(toRender) {
 				// console.log(`${sortedHighscores[key]}`);
 			}
 
-			// let testObj = {
-			// 	a: 22,
-			// 	b: 33,
-			// 	c: 44,
-			// } 
-
-			// for (const key in testObj) {
-			// 	console.log(`${key}`);
-			// 	console.log(`${testObj[key]}`);
-			// }
 		}
 		else {
 			var highscores = {};
@@ -211,99 +282,12 @@ function render(toRender) {
 		let clearHistory = document.querySelector("#clear-highscores");
 		clearHistory.addEventListener("click", function() {
 			localStorage.removeItem("highscores");
-			render("highScorePage");
+			location.href = "highscores.html";
 		});
 		
 	}
 }
 
-function updateQuestion () {
-
-	// Render result page after all questions answered
-	console.log(questions.length);
-	if (currentQuestionIndex === questions.length) {
-		return render("result");
-	}
-
-	console.log("updatequestions function initiated!");
-	var currentQuestion = questions[currentQuestionIndex];
-
-	mainHeaderEl.innerText = currentQuestion.question;
-
-	// Create 4 buttons with unique ID only when render questions for the first time
-	if(currentQuestionIndex === 0) {
-		var answer1El = document.createElement("button");
-		var answer2El = document.createElement("button");
-		var answer3El = document.createElement("button");
-		var answer4El = document.createElement("button");
-
-		// Append buttons to the main section and set style for them.
-		mainSection.append(answer1El,answer2El,answer3El,answer4El);
-		mainSection.setAttribute("class", "flex-column");
-		mainHeaderEl.setAttribute("class", "sub-header");
-		answer1El.setAttribute("id", "answer1");
-		answer2El.setAttribute("id", "answer2");
-		answer3El.setAttribute("id", "answer3");
-		answer4El.setAttribute("id", "answer4");
-
-		answer1El.addEventListener("click", function () {
-			checkAnswer(0);
-		});
-		answer2El.addEventListener("click", function () {
-			checkAnswer(1);
-		});
-		answer3El.addEventListener("click", function () {
-			checkAnswer(2);
-		});
-		answer4El.addEventListener("click", function () {
-			checkAnswer(3);
-		});
-	}
-	else {
-		answer1El = document.getElementById("answer1");
-		answer2El = document.getElementById("answer2");
-		answer3El = document.getElementById("answer3");
-		answer4El = document.getElementById("answer4");
-	}
-
-	console.log("index:" + currentQuestionIndex);
-	// Assign answer text into each button
-	answer1El.innerText = currentQuestion.answers[0];
-	answer2El.innerText = currentQuestion.answers[1];
-	answer3El.innerText = currentQuestion.answers[2];
-	answer4El.innerText = currentQuestion.answers[3];
-
-	// localStorage.setItem("answer1Btn",JSON.stringify(answer1El));
-
-	// var testEl = JSON.parse(localStorage.getItem("answer1Btn"));
-	// console.log(testEl)
-}
-
-// Function relation tree..... 
-// init() {
-// 	render() {
-// 		if (S) {
-// 			click event = > render() {
-
-// 			}
-// 		}
-// 		else if(Q) {
-// 			updateQuestion(Q) {
-// 				click event => checkAnswer(clickedPosition) {
-// 					notificationTimerFunc() {
-// 						render(Q) {
-
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-
-// 	}
-// 	mainTimerFunc () {
-
-// 	}
-// }
 
 // check right/wrong selection function
 function checkAnswer (clickedAnswer) {
@@ -329,7 +313,7 @@ function checkAnswer (clickedAnswer) {
 	notificationTimer(answerIsCorrect);
 }
 
-// main timer function to control game time
+// main timer function to display game time
 function mainTimer () {
 	timerEl.textContent = "Time: " + mainTimerCount;
 
@@ -366,14 +350,12 @@ function notificationTimer(answerIsCorrect) {
 		// notificationEl.dataset.state = "visible";
 		// notificationEl.setAttribute("data-state")
 		// notificationEl.textContent = "Correct!";
-		// console.log("correct answer");
 	}
 	else {
 		notificationEl.innerText = notificationEl.dataset.wrong;
 		// notificationEl.innerText = "Wrong!\n Minus 3 seconds!";
 		// Scale and turns timer font to red on wrong answer
 		timerEl.setAttribute("class", "timer-wrong");
-		// console.log("wrong answer");
 	}
 
 	Timer = setInterval(function() {
@@ -407,24 +389,32 @@ function init () {
 	}
 	else if (currentPage.endsWith("highscores.html") || currentPage.endsWith("highscores/")){
 		console.log("current page is highscores html!");
-		render("highScorePage");
+		render("highscoresPage");
 	}
 }
 
 init();
-// updateQuestion();
-// function renderNotification(correctAnswer) {
-// 	if(correctAnswer) {
-// 		notificationEl.textContent = "Correct!";
-// 		console.log("correct answer");
-// 	}
-// 	else {
-// 		notificationEl.innerText = "Wrong!\n Minus 3 seconds!"
-// 		console.log("wrong answer");
-// 	}
-// }
 
 
-// check win / lose function
-// function to setItem and or getItem from localStorage
-// 
+// Function relation tree..... 
+// init() {
+// 	render() {
+// 		if (S) {
+// 			click event = > render() {
+
+// 			}
+// 		}
+// 		else if(Q) {
+// 			updateQuestion(Q) {
+// 				click event => checkAnswer(clickedPosition) {
+// 					notificationTimerFunc() {
+// 						render(Q) {
+
+// 						}
+// 					}
+// 				}
+// 			}
+// 		}
+
+// 	}
+// 	mainTimerFunc () {
