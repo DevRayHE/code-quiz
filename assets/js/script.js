@@ -54,6 +54,8 @@ var questions = [
 // Main render function to render the page based on user input
 function render(toRender) {
 
+	var updateHighscore = false;
+
 	// Render Start Quiz elments on initial load of the page
 	if (toRender === "startQuiz") {
 		console.log("startquiz!");
@@ -73,8 +75,8 @@ function render(toRender) {
 
 		startQuizBtn.addEventListener("click", function() {
 			// Removes both intro and start quiz button elements on mouse click.
-			mainSection.removeChild(intro);
-			mainSection.removeChild(startQuizBtn);
+			intro.remove();
+			startQuizBtn.remove();
 			mainTimer ();
 			render("questions");
 		});
@@ -101,39 +103,33 @@ function render(toRender) {
 		input.placeholder = "initial";
 		input.id = "initial";
 
-		submit.href = "highscores.html";
-		anchor.setAttribute("href", "highscores.html");
-		anchor.setAttribute("class","button");
+		// submit.href = "highscores.html";
+		// anchor.setAttribute("href", "highscores.html");
+		// anchor.setAttribute("class","button");
 		// input.setAttribute("id", "initial");
-
+		// anchor.textContent = "Submit";
+		// anchor.setAttribute("class","button");
 
 		main.append(form);
 		form.append(label, input, anchor);
 		anchor.appendChild(submit);
 		label.textContent = "Enter Initial: ";
-		anchor.textContent = "Submit";
-		anchor.setAttribute("class","button");
-		// submit.textContent = "Submit";
+		submit.textContent = "Submit";
 
 		// let initial = document.getElementById("initial").value;
 		// alert(initial);
 
-		// function getInput(event) {
-		// 	event.preventDefault();
-		// 	let userInput = document.getElementById("initial").value;
-		// 	return userInput;
-		// }
-
-		let initial = anchor.addEventListener("click", function(e) {
+		let initial = submit.addEventListener("click", function(e) {
 			// Prevent browser default behaviour to store value properly to  local storage.
 			e.preventDefault();
-			e.stopPropagation();
+			// e.stopPropagation();
+
+			updateHighscore = true;
+
 			let userInput = document.getElementById("initial").value;
 			console.log("user input captured");
 
 			// Retrive from highscore from local storage+ b
-			// let highscoreIsEmpty = localStorage.getItem("highscores");
-
 			if (localStorage.getItem("highscores")) {
 				var highscores = JSON.parse(localStorage.getItem("highscores"));
 				console.log("Get Item");
@@ -149,6 +145,7 @@ function render(toRender) {
 			console.log(highscores);
 
 			localStorage.setItem("highscores", JSON.stringify(highscores));
+			location.href = "highscores.html";
 			return highscores;
 		});
 		console.log(initial);
@@ -156,22 +153,16 @@ function render(toRender) {
 		// let highscores = JSON.parse(localStorage.getItem("highscores"));
 		// console.log(highscores);
 		
-		
-		// console.log(initial);
-
-		// submit.addEventListener("click", function(event) {
-		// 	event.preventDefault();
-		// })
-		
 		// document.createElement("input");
 		// main.appendChild(input);
 		// <input class="text-input" id="initial" type="text" placeholder="Initial"></input>
 	}
 	else if (toRender === "highScorePage") {
 		// If highscores contains record.
-		if (localStorage.getItem("highscores")) {
-			var highscores = JSON.parse(localStorage.getItem("highscores"));
-			console.log("after parse: " + highscores);
+		// Change to sort only happens when a new highscore is captured
+		if (localStorage.getItem("highscoresHistory") && updateHighscore) {
+			var highscoresHistory = JSON.parse(localStorage.getItem("highscoresHistory"));
+			console.log("after parse: " + highscoresHistory);
 
 
 			// Convert highscores entries to an Array of arrays.
@@ -187,9 +178,9 @@ function render(toRender) {
 
 			console.log(sortedHighscores);
 			console.log(typeof(sortedHighscores));
-			localStorage.setItem("highscores", JSON.stringify(sortedHighscores));
-			highscores = JSON.parse(localStorage.getItem("highscores"));
-			console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscores")));
+			localStorage.setItem("highscoresHistory", JSON.stringify(sortedHighscores));
+			highscores = JSON.parse(localStorage.getItem("highscoresHistory"));
+			console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscoresHistory")));
 
 			let ol = document.querySelector("ol");
 			// let strSortedHighscores = Object.entries(sortedHighscores);
