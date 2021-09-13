@@ -10,7 +10,7 @@ var timerEl = document.getElementById("timer");
 // main.appendChild(mainHeaderEl);
 
 // Main game time 75 seconds.
-var mainTimerCount = 35;
+var mainTimerCount = 75;
 var currentQuestionIndex = 0;
 
 // Stores questions in an array of objects
@@ -79,11 +79,10 @@ function render(toRender) {
 	}
 	// Render questions when start Quiz button or answer is chosen
 	else if (toRender === "questions"){
-		// updateQuestion();
 		// Render result page after all questions answered
 		console.log(questions.length);
 		if (currentQuestionIndex === questions.length) {
-			return render("result");
+			return render("allDone");
 		}
 
 		console.log("updatequestions function initiated!");
@@ -135,16 +134,11 @@ function render(toRender) {
 	answer2El.innerText = currentQuestion.answers[1];
 	answer3El.innerText = currentQuestion.answers[2];
 	answer4El.innerText = currentQuestion.answers[3];
-
-	// localStorage.setItem("answer1Btn",JSON.stringify(answer1El));
-
-	// var testEl = JSON.parse(localStorage.getItem("answer1Btn"));
-	// console.log(testEl)
 	}
-	// Render result page by the end of questions or timer is up
-	else if (toRender === "result") {
+	// Render result page by the end of questions or when timer is up
+	else if (toRender === "allDone") {
 		// Hide timer element, stops main timer, sent score to local storage
-		clearInterval(mainTimer);
+		clearInterval(gameTimer);
 		let score = mainTimerCount;
 		// Store score to local storage.
 		localStorage.setItem("score", score);
@@ -158,13 +152,6 @@ function render(toRender) {
 		input.class= "text";
 		input.placeholder = "initial";
 		input.id = "initial";
-
-		// submit.href = "highscores.html";
-		// anchor.setAttribute("href", "highscores.html");
-		// anchor.setAttribute("class","button");
-		// input.setAttribute("id", "initial");
-		// anchor.textContent = "Submit";
-		// anchor.setAttribute("class","button");
 
 		main.append(form);
 		form.append(label, input, anchor);
@@ -186,7 +173,7 @@ function render(toRender) {
 			// TO DO: not finalized yet, need to stop submit link to next page action.
 			if (userInput === "") {
 				window.alert("Invalid input!");
-				render("result");
+				render("allDone");
 				userInput = document.getElementById("initial").value;
 			}
 			console.log("user input captured");
@@ -206,12 +193,6 @@ function render(toRender) {
 			console.log("userInput is captured as this: " + userInput);
 			highscores[userInput] = score;
 			console.log(highscores);
-
-			// localStorage.setItem("highscores", JSON.stringify(highscores));
-
-			// var highscores = JSON.parse(localStorage.getItem("highscoresHistory"));
-			// console.log("after parse: " + highscores);
-
 
 			// Convert highscores entries to an Array of arrays.
 			let arrHighscores = Object.entries(highscores);
@@ -235,14 +216,7 @@ function render(toRender) {
 			location.href = "highscores.html";
 		});
 		
-
-		// let highscores = JSON.parse(localStorage.getItem("highscores"));
-		// console.log(highscores);
-		
-		// document.createElement("input");
-		// main.appendChild(input);
-		// <input class="text-input" id="initial" type="text" placeholder="Initial"></input>
-	}
+	} // Render highscores page
 	else if (toRender === "highscoresPage") {
 		// If highscores contains record.
 		// Change to sort only happens when a new highscore is captured
@@ -250,28 +224,12 @@ function render(toRender) {
 			var highscores = JSON.parse(localStorage.getItem("highscores"));
 			console.log("after parse: " + highscores);
 
-			// Convert highscores entries to an Array of arrays.
-			// let arrHighscores = Object.entries(highscores);
-			// console.log("after  convert to array: " + arrHighscores);
-
-			// Sort the high scores based on score and assign to a variable.
-			// console.log("before sort: " + arrHighscores);
-			// let sortedHighscores = arrHighscores.sort((a,b) => b[1] - a[1]);
-			// console.log("after sort: " + arrHighscores);
-
-			// localStorage.setItem("highscoresHistory", JSON.stringify(sortedHighscores));
-			// highscores = JSON.parse(localStorage.getItem("highscoresHistory"));
-			// console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscoresHistory")));
-
 			let ol = document.querySelector("ol");
 			// Loop to render li item for each high score
 			for (const key in highscores) {
 				let li = document.createElement("li");
 				ol.appendChild(li);
-				// li.textContent = (parseInt(`${key}`) + 1)  + " - " + `${sortedHighscores[key]}`;
 				li.textContent = `${key}` + " - " + `${highscores[key]}`;
-				// console.log(`${key}`);
-				// console.log(`${sortedHighscores[key]}`);
 			}
 
 		}
@@ -287,7 +245,6 @@ function render(toRender) {
 		
 	}
 }
-
 
 // check right/wrong selection function
 function checkAnswer (clickedAnswer) {
@@ -318,7 +275,7 @@ function mainTimer () {
 	timerEl.textContent = "Time: " + mainTimerCount;
 
 	// Sets timer
-	mainTimer = setInterval(function() {
+	gameTimer = setInterval(function() {
 		mainTimerCount--;
 		timerEl.textContent = "Time: " + mainTimerCount;
 		// Does not goes into negative time
@@ -327,8 +284,8 @@ function mainTimer () {
 		// }
 		if (mainTimerCount <= 0) {
 			timerEl.textContent = "Time: 0";
-			clearInterval(mainTimer);
-			render("result");
+			clearInterval(gameTimer);
+			render("allDone");
 		}
 	}, 1000);
 }
@@ -338,44 +295,55 @@ function notificationTimer(answerIsCorrect) {
 	// Notification display time 1 seconds 
 	console.log("noti" + currentQuestionIndex);
 	let TimerCount = 1;
-	// var notificationEl = document.createElement("div");
-	// notificationEl.setAttribute("id", "notification");
-	// main.appendChild(notificationEl);
 
 	let notificationEl = document.querySelector("#notification");
 	notificationEl.setAttribute("style", "border-top: solid");
 
+
+	// Jquery to select all buttons on page and disable them while notification is visible
+	$( ":button").attr("disabled",true);
+
+	// Display notification message
 	if (answerIsCorrect) {
 		notificationEl.innerText = notificationEl.dataset.correct;
-		// notificationEl.dataset.state = "visible";
-		// notificationEl.setAttribute("data-state")
-		// notificationEl.textContent = "Correct!";
 	}
 	else {
 		notificationEl.innerText = notificationEl.dataset.wrong;
-		// notificationEl.innerText = "Wrong!\n Minus 3 seconds!";
 		// Scale and turns timer font to red on wrong answer
 		timerEl.setAttribute("class", "timer-wrong");
 	}
 
 	Timer = setInterval(function() {
 		TimerCount--;
-	
 		if (TimerCount === 0) {
 			// Remove notification element
-			// main.removeChild(notificationEl);
-			// mainSection.removeChild(answer1El);
 			notificationEl.innerText = "";
 			notificationEl.setAttribute("style", "border-top: none");
+
+			// Jquery to select all buttons on page and enable them after notification timer is done
+			$( ":button").attr("disabled",false);
 
 			// Reset timer font to normal
 			timerEl.removeAttribute("class");
 			render("questions");
 			clearInterval(Timer);
-			
 		}
 	}, 1000);
 }
+
+// Trying with set TImeout.. seems doesn't work really well with the way how I toggle the notification...
+// function notificationTimer2(answerIsCorrect) {
+	
+// 	setTimeout(function() {
+// 		if (answerIsCorrect) {
+// 			notificationEl.innerText = notificationEl.dataset.correct;
+// 		}
+// 		else {
+// 			notificationEl.innerText = notificationEl.dataset.wrong;
+// 			timerEl.setAttribute("class", "timer-wrong");
+// 		}
+// 	}, 1000);
+// }
 
 // init function to call when page is loaded
 function init () {
@@ -394,27 +362,3 @@ function init () {
 }
 
 init();
-
-
-// Function relation tree..... 
-// init() {
-// 	render() {
-// 		if (S) {
-// 			click event = > render() {
-
-// 			}
-// 		}
-// 		else if(Q) {
-// 			updateQuestion(Q) {
-// 				click event => checkAnswer(clickedPosition) {
-// 					notificationTimerFunc() {
-// 						render(Q) {
-
-// 						}
-// 					}
-// 				}
-// 			}
-// 		}
-
-// 	}
-// 	mainTimerFunc () {
