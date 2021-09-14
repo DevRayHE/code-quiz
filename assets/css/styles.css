@@ -1,11 +1,16 @@
+body {
+  font-family: 'Passero One', cursive;
+}
+
+
 .main-header {
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
 .sub-header {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
@@ -13,7 +18,7 @@
 
 /* Style for nav */
 nav {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -40,7 +45,7 @@ main {
 }
 
 p {
-  font-size: 16px;
+  font-size: 1.5rem;
   text-align: center;
   line-height: 1.5;
   margin: 0.5em;
@@ -104,5 +109,6 @@ ol {
 
 /* High score each player style */
 li {
+  font-size: 1.5rem;
   line-height: 1.5;
 }
