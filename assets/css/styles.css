@@ -1,24 +1,27 @@
 body {
-  font-family: 'Passero One', cursive;
+  font-family: 'Urbanist', sans-serif;
+  font-size: 16px;
 }
 
 
 .main-header {
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .sub-header {
-  font-size: 3.5rem;
+  max-width: 75%;
+  font-size: 2.5em;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
 }
 
 
 /* Style for nav */
 nav {
-  font-size: 2.5rem;
+  font-size: 2rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -55,18 +58,25 @@ p {
 /* Define a universal style to be used for all buttons */
 /* Button style */
 button {
-  font-size: 1.2em;
+  font-size: 1.2rem;
   font-weight: bolder;
   text-align: left;
   background-color: blueviolet;
   color:beige;
-  margin: 0.1em;
+  margin: 0.3em;
   border-radius: 5px;
   cursor: pointer;
   padding:0.2em;
 }
 
-.button {
+button:hover {
+  opacity: 75%;
+  background-color: rgb(193, 113, 207);
+  box-shadow: rgb(78, 77, 77) 2px 2px 2px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* .button {
   font-size: 1.2em;
   font-weight: bolder;
   text-align: left;
@@ -76,12 +86,12 @@ button {
   border-radius: 5px;
   cursor: pointer;
   padding:0.2em;
-}
+} */
 
 
 /* Notification style (right, wrong with timer subtraction?) */
 #notification {
-  margin-top: 1em;
+  margin-top: 0.5rem;
   opacity: 50%;
   font-size:2em;
   font-style:italic;
@@ -100,9 +110,9 @@ a {
 }
 
 ol {
-  background-color: rgb(185, 120, 185);
   list-style: decimal;
   margin-bottom: 1em;
+  border-radius: 5px;
 }
 
 /* Form input box style */
@@ -111,4 +121,17 @@ ol {
 li {
   font-size: 1.5rem;
   line-height: 1.5;
+}
+
+#ranking {
+  background: rgb(204, 125, 219);
+  padding-left: 2.5%;
+  padding-right: 1%;
+  border-radius: 5px;
+}
+
+#ranking li {
+  background-color: rgb(223, 206, 240);
+  margin: 5px;
+  border-radius: 5px;
 }

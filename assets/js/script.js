@@ -6,9 +6,6 @@ var viewHighScoreEl = document.getElementById("high-score");
 var timerEl = document.getElementById("timer");
 // var notificationEl = document.querySelectorAll(".notification");
 
-// var mainHeaderEl = document.createElement("header");
-// main.appendChild(mainHeaderEl);
-
 // Main game time 75 seconds.
 var mainTimerCount = 75;
 var currentQuestionIndex = 0;
@@ -16,33 +13,39 @@ var currentQuestionIndex = 0;
 // Stores questions in an array of objects
 var questions = [
 	{
-		question: "question 1?",
-		answers: ["a", "b", "c", "d"],
-		correctAnswer: 0,
+		question: "Why so Javascript and Java have similar name?",
+		answers: ["They both originated on the island of Java", 
+		"JavasScript's syntax is loosley based on Java's", 
+		"Both A and B", 
+		"None of the above"],
+		correctAnswer: 1,
 	},
 	{
-		question: "question 2?",
-		answers: ["a2", "b2", "c2", "d2"],
-		correctAnswer: 0,
+		question: "Which is not valid data type in Javascript?",
+		answers: ["Undefinded", "Boolean", "float", "Number"],
+		correctAnswer: 2,
 	},
 	{
-		question: "question 3?",
-		answers: ["a3", "b3", "c3", "d3"],
-		correctAnswer: 0,
+		question: "Purpose of designing the Javascript?",
+		answers: ["To Perform Server Side Scripting Opertion",
+		"To add interactivity to HTML Pages", 
+		"To Style HTML Pages", 
+		"All of the above"],
+		correctAnswer: 3,
 	},
 	{
-		question: "question 4?",
-		answers: ["a4", "b4", "c4", "d4"],
-		correctAnswer: 0,
+		question: "Which of the following function of Array object removes the last element from an array and returns that element?",
+		answers: ["push()", "delete()", "pop()", "link()"],
+		correctAnswer: 2,
 	},
 	{
-		question: "question 5?",
-		answers: ["a5", "b5", "c5", "d5"],
-		correctAnswer: 0,
+		question: "What are the types of Pop up boxes available in JavaScript?",
+		answers: ["Prompt", "Alert", "Confirm", "All of the above"],
+		correctAnswer: 3,
 	},
 	{
-		question: "question 6?",
-		answers: ["a6", "b6", "c6", "d6"],
+		question: "Original Name of Javascript is?",
+		answers: ["Mocha", "LiveScript", "Escript", "Javascript"],
 		correctAnswer: 0,
 	},
 ];
@@ -61,7 +64,7 @@ function render(toRender) {
 		var intro = document.createElement("p");
 		var startQuizBtn = document.createElement("button");
 
-		intro.innerText = "Try to answer the following code-related questions within the time limit.\n Keep in mind that incorrect answers will penalize your score time by 3 seconds!";
+		intro.innerText = "Try to answer the following code-related questions within the time limit.\n Keep in mind that incorrect answers will penalize your score time by 6 seconds!";
 		startQuizBtn.innerText = "Start Quiz";
 
 		mainHeaderEl.setAttribute("class", "main-header");
@@ -82,23 +85,34 @@ function render(toRender) {
 		// Render result page after all questions answered
 		console.log(questions.length);
 		if (currentQuestionIndex === questions.length) {
+			document.querySelector("ol").remove();
 			return render("allDone");
 		}
 
-		console.log("updatequestions function initiated!");
 		var currentQuestion = questions[currentQuestionIndex];
-
+		mainHeaderEl.setAttribute("class", "sub-header");
 		mainHeaderEl.innerText = currentQuestion.question;
 
 		// Create 4 buttons with unique ID only when render questions for the first time
 		if(currentQuestionIndex === 0) {
+			var answerListEl = document.createElement("ol");
 			var answer1El = document.createElement("button");
 			var answer2El = document.createElement("button");
 			var answer3El = document.createElement("button");
 			var answer4El = document.createElement("button");
 
 			// Append buttons to the main section and set style for them.
-			mainSection.append(answer1El,answer2El,answer3El,answer4El);
+			mainSection.append(answerListEl);
+		
+			// Create 4 li element and append them under orderd list
+			for (let i=0; i < 4; i++) {
+				answerListEl.appendChild(document.createElement("li"));
+			}
+			const allLiEl = document.querySelectorAll("li");
+			allLiEl[0].append(answer1El);
+			allLiEl[1].append(answer2El);
+			allLiEl[2].append(answer3El);
+			allLiEl[3].append(answer4El);
 			mainSection.setAttribute("class", "flex-column");
 			mainHeaderEl.setAttribute("class", "sub-header");
 			answer1El.setAttribute("id", "answer1");
@@ -143,7 +157,9 @@ function render(toRender) {
 		// Store score to local storage.
 		localStorage.setItem("score", score);
 		mainHeaderEl.textContent = "All done!";
-		mainSection.textContent = "Your final score is: " + localStorage.getItem("score");
+		let pTag = document.createElement("p");
+		mainSection.append(pTag);
+		pTag.textContent = "Your final score is: " + localStorage.getItem("score");
 		let form = document.createElement("form");
 		let label = document.createElement("label");
 		let input = document.createElement("input");
@@ -152,6 +168,8 @@ function render(toRender) {
 		input.class= "text";
 		input.placeholder = "initial";
 		input.id = "initial";
+		// Input validation check
+		input.required = true;
 
 		main.append(form);
 		form.append(label, input, anchor);
@@ -165,16 +183,13 @@ function render(toRender) {
 		submit.addEventListener("click", function(e) {
 			// Prevent browser default behaviour to store value properly to  local storage.
 			e.preventDefault();
-			// e.stopPropagation();
-
-			// updateHighscore = true;
 
 			let userInput = document.getElementById("initial").value;
-			// TO DO: not finalized yet, need to stop submit link to next page action.
+			// // TO DO: not finalized yet, need to stop submit link to next page action on invalid input.
+			// Input validation check
 			if (userInput === "") {
 				window.alert("Invalid input!");
-				render("allDone");
-				userInput = document.getElementById("initial").value;
+				return userInput = document.getElementById("initial").value;
 			}
 			console.log("user input captured");
 
@@ -228,8 +243,9 @@ function render(toRender) {
 			// Loop to render li item for each high score
 			for (const key in highscores) {
 				let li = document.createElement("li");
+				console.log(key);
 				ol.appendChild(li);
-				li.textContent = `${key}` + " - " + `${highscores[key]}`;
+				li.innerText = `${key}` + " - " + `${highscores[key]}`;
 			}
 
 		}
@@ -240,6 +256,7 @@ function render(toRender) {
 		let clearHistory = document.querySelector("#clear-highscores");
 		clearHistory.addEventListener("click", function() {
 			localStorage.removeItem("highscores");
+			// Refresh the page on click
 			location.href = "highscores.html";
 		});
 		
@@ -251,10 +268,6 @@ function checkAnswer (clickedAnswer) {
 
 	var currentQuestion = questions[currentQuestionIndex];
 	var answerIsCorrect = false;
-
-	// if (currentQuestion === null) {
-	// 	return;
-	// }
 
 	// Render correct answer notification
 	if (currentQuestion.correctAnswer === clickedAnswer) {
