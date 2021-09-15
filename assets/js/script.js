@@ -1,10 +1,8 @@
 var main = document.querySelector("main");
 var mainHeaderEl = document.querySelector("header");
 var mainSection = document.querySelector("#main-section");
-// document.querySelector("#question")
 var viewHighScoreEl = document.getElementById("high-score");
 var timerEl = document.getElementById("timer");
-// var notificationEl = document.querySelectorAll(".notification");
 
 // Main game time 75 seconds.
 var mainTimerCount = 75;
@@ -50,27 +48,27 @@ var questions = [
 	},
 ];
 
-// Main render function to render the page based on scenario
+// Main render function to render the page based on parameter: startQuiz Or questions Or all done Or highscorespage
 function render(toRender) {
 
 	// var updateHighscore = false;
 
 	// Render Start Quiz elments on initial load of the page
 	if (toRender === "startQuiz") {
-		console.log("startquiz!");
-
 		viewHighScoreEl.textContent = "View Highscores";
 		mainHeaderEl.textContent = "Coding Quiz Challenge";
 		var intro = document.createElement("p");
 		var startQuizBtn = document.createElement("button");
 
-		intro.innerText = "Try to answer the following code-related questions within the time limit.\n Keep in mind that incorrect answers will penalize your score time by 6 seconds!";
-		startQuizBtn.innerText = "Start Quiz";
+		intro.textContent = "Try to answer the following code-related questions within the time limit.\n Keep in mind that incorrect answers will penalize your score time by 6 seconds!";
+		startQuizBtn.textContent = "Start Quiz";
 
 		mainHeaderEl.setAttribute("class", "main-header");
+		mainSection.setAttribute("class", "flex-column");
+		startQuizBtn.style.width = "fit-content";
+		startQuizBtn.style.alignSelf = "center";
 		mainSection.append(intro);
-		mainSection.appendChild(startQuizBtn);
-		// mainSection.append(startQuizBtn);
+		mainSection.append(startQuizBtn);
 
 		startQuizBtn.addEventListener("click", function() {
 			// Removes both intro and start quiz button elements on mouse click.
@@ -83,15 +81,15 @@ function render(toRender) {
 	// Render questions when start Quiz button or answer is chosen
 	else if (toRender === "questions"){
 		// Render result page after all questions answered
-		console.log(questions.length);
 		if (currentQuestionIndex === questions.length) {
 			document.querySelector("ol").remove();
 			return render("allDone");
 		}
 
+		// Assign question based on current index
 		var currentQuestion = questions[currentQuestionIndex];
 		mainHeaderEl.setAttribute("class", "sub-header");
-		mainHeaderEl.innerText = currentQuestion.question;
+		mainHeaderEl.textContent = currentQuestion.question;
 
 		// Create 4 buttons with unique ID only when render questions for the first time
 		if(currentQuestionIndex === 0) {
@@ -114,7 +112,7 @@ function render(toRender) {
 			allLiEl[2].append(answer3El);
 			allLiEl[3].append(answer4El);
 			mainSection.setAttribute("class", "flex-column");
-			mainHeaderEl.setAttribute("class", "sub-header");
+			// mainHeaderEl.setAttribute("class", "sub-header");
 			answer1El.setAttribute("id", "answer1");
 			answer2El.setAttribute("id", "answer2");
 			answer3El.setAttribute("id", "answer3");
@@ -142,12 +140,11 @@ function render(toRender) {
 		answer4El = document.getElementById("answer4");
 	}
 
-	console.log("index:" + currentQuestionIndex);
 	// Assign answer text into each button
-	answer1El.innerText = currentQuestion.answers[0];
-	answer2El.innerText = currentQuestion.answers[1];
-	answer3El.innerText = currentQuestion.answers[2];
-	answer4El.innerText = currentQuestion.answers[3];
+	answer1El.textContent = currentQuestion.answers[0];
+	answer2El.textContent = currentQuestion.answers[1];
+	answer3El.textContent = currentQuestion.answers[2];
+	answer4El.textContent = currentQuestion.answers[3];
 	}
 	// Render result page by the end of questions or when timer is up
 	else if (toRender === "allDone") {
@@ -155,11 +152,12 @@ function render(toRender) {
 		clearInterval(gameTimer);
 		let score = mainTimerCount;
 		// Store score to local storage.
-		localStorage.setItem("score", score);
+		localStorage.setItem("userScore", score);
 		mainHeaderEl.textContent = "All done!";
 		let pTag = document.createElement("p");
 		mainSection.append(pTag);
-		pTag.textContent = "Your final score is: " + localStorage.getItem("score");
+		pTag.textContent = "Your final score is: " + localStorage.getItem("userScore");
+		// Create form elements
 		let form = document.createElement("form");
 		let label = document.createElement("label");
 		let input = document.createElement("input");
@@ -177,12 +175,9 @@ function render(toRender) {
 		label.textContent = "Enter Initial: ";
 		submit.textContent = "Submit";
 
-		// let initial = document.getElementById("initial").value;
-		// alert(initial);
-
-		submit.addEventListener("click", function(e) {
+		submit.addEventListener("click", function(event) {
 			// Prevent browser default behaviour to store value properly to  local storage.
-			e.preventDefault();
+			event.preventDefault();
 
 			let userInput = document.getElementById("initial").value;
 			// // TO DO: not finalized yet, need to stop submit link to next page action on invalid input.
@@ -191,43 +186,29 @@ function render(toRender) {
 				window.alert("Invalid input!");
 				return userInput = document.getElementById("initial").value;
 			}
-			console.log("user input captured");
 
 			// Retrive from highscore from local storage if not empty.
 			if (localStorage.getItem("highscores")) {
 				var highscores = JSON.parse(localStorage.getItem("highscores"));
-				console.log("Get Item");
-				console.log(highscores);
 			}
 			else {
 				// Create empty object
 				var highscores = {};
-				console.log("Get item is empty");
 			}
 	
-			console.log("userInput is captured as this: " + userInput);
 			highscores[userInput] = score;
-			console.log(highscores);
 
 			// Convert highscores entries to an Array of arrays.
 			let arrHighscores = Object.entries(highscores);
-			console.log("after  convert to array: " + arrHighscores);
 
 			// Sort the high scores based on score and assign to a variable.
-			console.log("before sort: " + arrHighscores);
 			let sortedArrHighscores = arrHighscores.sort((a,b) => b[1] - a[1]);
-			console.log("after sort: " + arrHighscores);
-
-			console.log(sortedArrHighscores);
-			console.log(typeof(sortedArrHighscores));
 
 			// Converting sorted Array of arrays high scores back to an object, to use stringify store in local storage properly.
 			let objHighscores = Object.fromEntries(sortedArrHighscores);
 			localStorage.setItem("highscores", JSON.stringify(objHighscores));
-			// highscores = JSON.parse(localStorage.getItem("highscores"));
-			// console.log("updated local storage highscores should be sorted now: " + JSON.parse(localStorage.getItem("highscores")));
-			console.log("updated local storage highscores should be sorted now: " + highscores);
 
+			// On click event, render a new page after all the above code finish running
 			location.href = "highscores.html";
 		});
 		
@@ -237,15 +218,15 @@ function render(toRender) {
 		// Change to sort only happens when a new highscore is captured
 		if (localStorage.getItem("highscores")) {
 			var highscores = JSON.parse(localStorage.getItem("highscores"));
-			console.log("after parse: " + highscores);
 
 			let ol = document.querySelector("ol");
 			// Loop to render li item for each high score
 			for (const key in highscores) {
 				let li = document.createElement("li");
-				console.log(key);
+				li.style.padding = "6px";
+				li.style.margin = "1em";
 				ol.appendChild(li);
-				li.innerText = `${key}` + " - " + `${highscores[key]}`;
+				li.textContent = `${key}` + " - " + `${highscores[key]}`;
 			}
 
 		}
@@ -275,11 +256,16 @@ function checkAnswer (clickedAnswer) {
 	}
 	else { // Render wrong notification and minus 6 seconds.
 		answerIsCorrect = false;
-		mainTimerCount -= 6;
+		// check current time is bigger than 6, avoid minus score edge case
+		if (mainTimerCount >= 6) {
+			mainTimerCount -= 6;
+		} else if (mainTimerCount < 6) {
+			// Set mainTimerCount to 1 will display score and timer properly as 0, setting it to 0, will display -1 as score, of which should be avoided.
+			mainTimerCount = 1;
+		}
 	}
 
 	currentQuestionIndex++;
-	console.log("checkanswer" + currentQuestionIndex);
 	notificationTimer(answerIsCorrect);
 }
 
@@ -298,6 +284,7 @@ function mainTimer () {
 		if (mainTimerCount <= 0) {
 			timerEl.textContent = "Time: 0";
 			clearInterval(gameTimer);
+			document.querySelector("ol").remove();
 			render("allDone");
 		}
 	}, 1000);
@@ -306,7 +293,6 @@ function mainTimer () {
 // timer function to contorl notification display time
 function notificationTimer(answerIsCorrect) {
 	// Notification display time 1 seconds 
-	console.log("noti" + currentQuestionIndex);
 	let TimerCount = 1;
 
 	let notificationEl = document.querySelector("#notification");
@@ -318,10 +304,10 @@ function notificationTimer(answerIsCorrect) {
 
 	// Display notification message
 	if (answerIsCorrect) {
-		notificationEl.innerText = notificationEl.dataset.correct;
+		notificationEl.textContent = notificationEl.dataset.correct;
 	}
 	else {
-		notificationEl.innerText = notificationEl.dataset.wrong;
+		notificationEl.textContent = notificationEl.dataset.wrong;
 		// Scale and turns timer font to red on wrong answer
 		timerEl.setAttribute("class", "timer-wrong");
 	}
@@ -330,7 +316,7 @@ function notificationTimer(answerIsCorrect) {
 		TimerCount--;
 		if (TimerCount === 0) {
 			// Remove notification element
-			notificationEl.innerText = "";
+			notificationEl.textContent = "";
 			notificationEl.setAttribute("style", "border-top: none");
 
 			// Jquery to select all buttons on page and enable them after notification timer is done
@@ -343,20 +329,6 @@ function notificationTimer(answerIsCorrect) {
 		}
 	}, 1000);
 }
-
-// Trying with set TImeout.. seems doesn't work really well with the way how I toggle the notification...
-// function notificationTimer2(answerIsCorrect) {
-	
-// 	setTimeout(function() {
-// 		if (answerIsCorrect) {
-// 			notificationEl.innerText = notificationEl.dataset.correct;
-// 		}
-// 		else {
-// 			notificationEl.innerText = notificationEl.dataset.wrong;
-// 			timerEl.setAttribute("class", "timer-wrong");
-// 		}
-// 	}, 1000);
-// }
 
 // init function to call when page is loaded
 function init () {
