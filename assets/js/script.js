@@ -65,6 +65,7 @@ function render(toRender) {
 
 		mainHeaderEl.setAttribute("class", "main-header");
 		mainSection.setAttribute("class", "flex-column");
+		intro.style.padding = "3rem";
 		startQuizBtn.style.width = "fit-content";
 		startQuizBtn.style.alignSelf = "center";
 		mainSection.append(intro);
