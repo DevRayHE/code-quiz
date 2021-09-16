@@ -66,6 +66,7 @@ function render(toRender) {
 		mainHeaderEl.setAttribute("class", "main-header");
 		mainSection.setAttribute("class", "flex-column");
 		intro.style.padding = "3rem";
+		intro.style.maxWidth = "75%";
 		startQuizBtn.style.width = "fit-content";
 		startQuizBtn.style.alignSelf = "center";
 		mainSection.append(intro);
@@ -237,11 +238,14 @@ function render(toRender) {
 
 		let clearHistory = document.querySelector("#clear-highscores");
 		clearHistory.addEventListener("click", function() {
-			localStorage.removeItem("highscores");
-			// Refresh the page on click
-			location.href = "highscores.html";
+			// Confirmation box to confirm action
+			let confirm = window.confirm("Select OK to clear all the high scores!");
+			if (confirm) {
+				localStorage.removeItem("highscores");
+				// Refresh the page on click
+				location.href = "highscores.html";
+			}	
 		});
-		
 	}
 }
 
